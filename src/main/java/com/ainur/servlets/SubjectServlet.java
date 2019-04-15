@@ -13,7 +13,7 @@ import java.io.IOException;
 public class SubjectServlet extends HttpServlet {
 
 
-    Repository repository = MysqlRepositoryImpl.getInstance();
+    Repository repository = new MysqlRepositoryImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -32,7 +32,7 @@ public class SubjectServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+
     }
 
     @Override

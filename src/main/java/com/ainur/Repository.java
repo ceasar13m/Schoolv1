@@ -10,6 +10,8 @@ import java.util.ArrayList;
 public interface Repository {
     public boolean addTeacher(Teacher teacher);
     public boolean addStudent(Student student);
+    public boolean removeTeacher(Teacher teacher);
+    public boolean removeStudent(Student student);
     public boolean addGrade(Grade grade);
     public boolean addSubject(Subject subject);
     public ArrayList<Student> getAllStudents();

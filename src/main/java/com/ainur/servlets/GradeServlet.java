@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class GradeServlet extends HttpServlet {
 
-    Repository repository = MysqlRepositoryImpl.getInstance();
+    Repository repository = new MysqlRepositoryImpl();
 
 
     @Override

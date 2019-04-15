@@ -16,26 +16,26 @@ public class MysqlRepositoryImpl implements Repository {
             "&requireSSL=false"+
             "&useLegacyDatetimeCode=false"+
             "&amp"+
-            "&serverTimezone=UTC";;
+            "&serverTimezone=UTC";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "kazan13m";
     private static Connection connection;
 
 
 
-    private static final MysqlRepositoryImpl repository = new MysqlRepositoryImpl();
 
     /************************************************************************************************************
      * Конструктор Singleton класса
      * Создается БД school
-     * В БД создаются четыре таблицы:
+     * В БД создаются пять:
      * 1. grades
      * 2. students
      * 3. subjects
      * 4. teachers
+     * 5. teacherssubjects // какой учитель какие предметы ведет // teacherId - subjectId
      */
 
-    private MysqlRepositoryImpl() {
+    public MysqlRepositoryImpl() {
         try {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
@@ -45,30 +45,38 @@ public class MysqlRepositoryImpl implements Repository {
             statement.executeUpdate("use school;");
             statement.executeUpdate(
                     "CREATE TABLE if not exists grades (" +
-                    "    id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-                    "    name TEXT NOT NULL\n" +
+                    "    id mediumint  AUTO_INCREMENT not null," +
+                    "    name TEXT NOT NULL," +
+                    "    primary key (id)" +
                     ");");
             statement.executeUpdate(
                     "CREATE TABLE if not exists students (" +
-                    "    id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-                    "    firstName TEXT," +
-                    "    secondName TEXT," +
-                    "    gradeId mediumint," +
+                    "    id MEDIUMINT AUTO_INCREMENT NOT NULL  PRIMARY KEY," +
+                    "    firstName TEXT not null," +
+                    "    secondName TEXT not null," +
+                    "    gradeId mediumint not null," +
                     "    FOREIGN KEY (gradeId) REFERENCES grades(id)" +
                     ");");
             statement.executeUpdate(
                     "CREATE TABLE if not exists subjects (" +
-                    "    id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+                    "    id MEDIUMINT AUTO_INCREMENT NOT NULL  PRIMARY KEY," +
                     "    name TEXT NOT NULL\n" +
                     ");");
             statement.executeUpdate(
                     "CREATE TABLE if not exists teachers (" +
-                    "    id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-                    "    firstName TEXT," +
-                    "    secondName TEXT," +
-                    "    subjectId mediumint," +
-                    "    FOREIGN KEY (subjectId) REFERENCES subjects(id)" +
+                    "    id MEDIUMINT AUTO_INCREMENT NOT NULL  PRIMARY KEY," +
+                    "    firstName TEXT not null," +
+                    "    secondName TEXT not null" +
                     ");");
+
+            statement.executeUpdate(
+                    "CREATE TABLE if not exists teachersSubjects (" +
+                     "    teacherId mediumint not null," +
+                     "    subjectId mediumint not null," +
+                     "    FOREIGN KEY (teacherId) REFERENCES teachers(id), " +
+                     "    FOREIGN KEY (subjectId) REFERENCES subjects(id) " +
+                     ");");
+
 
 
         } catch (SQLException e) {
@@ -76,17 +84,6 @@ public class MysqlRepositoryImpl implements Repository {
         }
     }
 
-    /************************************************************************************************************
-     * Singleton
-     *
-     *
-     *
-     *
-     * @return
-     */
-    public static MysqlRepositoryImpl getInstance() {
-        return repository;
-    }
 
 
     /************************************************************************************************************
@@ -110,8 +107,8 @@ public class MysqlRepositoryImpl implements Repository {
                 return false;
             }
             else {
-                String teacherInsertString = "insert into grades (name) values ('" + grade.getName() + "');";
-                statement.executeUpdate(teacherInsertString);
+                String gradeInsertString = "insert into grades set name = '" + grade.getName() + "';";
+                statement.executeUpdate(gradeInsertString);
                 return true;
             }
         } catch (SQLException e) {
@@ -129,7 +126,26 @@ public class MysqlRepositoryImpl implements Repository {
 
     @Override
     public boolean addSubject(Subject subject) {
-        return false;
+        Statement statement;
+        try {
+            statement = connection.createStatement();
+            statement.executeUpdate("use school");
+
+            String tempString = "select * from subjects where name = '" + subject.getName() + "';";
+            ResultSet resultSet = statement.executeQuery(tempString);
+
+            if(resultSet.next()) {
+                return false;
+            }
+            else {
+                String subjectInsertString = "insert into subjects set name = '" + subject.getName() + "';";
+                statement.executeUpdate(subjectInsertString);
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
@@ -143,16 +159,16 @@ public class MysqlRepositoryImpl implements Repository {
         Statement statement;
         try {
             statement = connection.createStatement();
-            statement.executeUpdate("use school");
 
-            String tempString = "select * from teachers where firstName = '" + teacher.getFirstName() + "', secondName = '" + teacher.getSecondName() + "');";
+
+            String tempString = "select * from teachers where firstName = '" + teacher.getFirstName() + "' and secondName = '" + teacher.getSecondName() + "';";
             ResultSet resultSet = statement.executeQuery(tempString);
 
             if(resultSet.next()) {
                 return false;
             }
             else {
-                String teacherInsertString = "insert into teachers (firstName, secondName, subjectId) values ('" + teacher.getFirstName() + "','" + teacher.getSecondName() + "'," + 1 + ");";
+                String teacherInsertString = "insert into teachers (firstName, secondName) values ('" + teacher.getFirstName() + "','" + teacher.getSecondName() + "');";
                 statement.executeUpdate(teacherInsertString);
                 return true;
             }
@@ -162,6 +178,34 @@ public class MysqlRepositoryImpl implements Repository {
         }
     }
 
+
+    @Override
+    public boolean removeTeacher(Teacher teacher) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("use school");
+            String removeTeacherString = "delete from teachers where firstName = '" + teacher.getFirstName() + "' and secondName = '" + teacher.getSecondName() + "';";
+            statement.executeUpdate(removeTeacherString);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removeStudent(Student student) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("use school");
+            String removeStudentString = "delete from students where firstName = '" + student.getFirstName() + "' and secondName = '" + student.getSecondName() + "' and gradeId =" + student.getGradeId() + ";";
+            statement.executeUpdate(removeStudentString);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     /************************************************************************************************************
      * Добавление в таблицу students нового студента
@@ -175,14 +219,14 @@ public class MysqlRepositoryImpl implements Repository {
             statement = connection.createStatement();
             statement.executeUpdate("use school");
 
-            String tempString = "select * from students where firstName = '" + student.getFirstName() + "', secondName = '" + student.getSecondName() + "');";
+            String tempString = "select * from students where firstName = '" + student.getFirstName() + "' and secondName = '" + student.getSecondName() + "';";
             ResultSet resultSet = statement.executeQuery(tempString);
 
             if(resultSet.next()) {
                 return false;
             }
             else {
-                String studentInsertString = "insert into teachers (firstName, secondName, subjectId) values ('" + student.getFirstName() + "','" + student.getSecondName() + "'," + 1 + ");";
+                String studentInsertString = "insert into students (firstName, secondName, gradeId) values ('" + student.getFirstName() + "','" + student.getSecondName() + "'," + student.getGradeId() + ");";
                 statement.executeUpdate(studentInsertString);
                 return true;
             }

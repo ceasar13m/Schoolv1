@@ -3,7 +3,7 @@ package com.ainur.models;
 public class Student {
     private String firstName;
     private String secondName;
-    String grade;
+    int gradeId;
 
     public String getFirstName() {
         return firstName;
@@ -21,11 +21,11 @@ public class Student {
         this.secondName = secondName;
     }
 
-    public String getGrade() {
-        return grade;
+    public int getGradeId() {
+        return gradeId;
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade;
+    public void setGradeId(int gradeId) {
+        this.gradeId = gradeId;
     }
 }

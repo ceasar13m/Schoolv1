@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class TeacherServlet extends HttpServlet {
+
+    Repository repository = new MysqlRepositoryImpl();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -21,9 +24,8 @@ public class TeacherServlet extends HttpServlet {
         Teacher teacher = new Teacher();
         teacher.setFirstName(req.getParameter("firstName"));
         teacher.setSecondName(req.getParameter("secondName"));
-        teacher.setSubject(req.getParameter("subject"));
 
-        Repository repository = MysqlRepositoryImpl.getInstance();
+
         repository.addTeacher(teacher);
     }
 
@@ -34,6 +36,9 @@ public class TeacherServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+        Teacher teacher = new Teacher();
+        teacher.setFirstName(req.getParameter("firstName"));
+        teacher.setSecondName(req.getParameter("secondName"));
+        repository.removeTeacher(teacher);
     }
 }
