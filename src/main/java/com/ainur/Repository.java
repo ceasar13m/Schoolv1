@@ -17,4 +17,5 @@ public interface Repository {
     public void addSubject(Subject subject) throws SQLException;
     public ArrayList<Student> getAllStudents();
     public ArrayList<Teacher> getAllTeachers();
+    public ArrayList<Student> getStudents(int id);
 }

@@ -192,7 +192,41 @@ public class MysqlRepositoryImpl implements Repository {
     }
 
 
+    /************************************************************************************************************
+     * Получение списка студентов определенного класса
+     * @param id
+     * @return
+     */
+    @Override
+    public ArrayList<Student> getStudents(int id) {
+        ArrayList<Student> students = new ArrayList<>();
 
+        Statement statement;
+        try {
+            statement = connection.createStatement();
+            statement.executeUpdate("use school");
+            String tempString = "select * from students where gradeId = " + id;
+            ResultSet resultSet = statement.executeQuery(tempString);
+            while(resultSet.next()) {
+                Student student = new Student();
+                student.setFirstName(resultSet.getString(2));
+                student.setSecondName(resultSet.getString(3));
+                student.setGradeId(Integer.parseInt(resultSet.getString(4)));
+                students.add(student);
+            }
+
+            return students;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /*************************************************************************************************************
+     * Получение списка всех студентов
+     * @return
+     */
     @Override
     public ArrayList<Student> getAllStudents() {
         ArrayList<Student> students = new ArrayList<>();
@@ -218,6 +252,11 @@ public class MysqlRepositoryImpl implements Repository {
         }
     }
 
+
+    /**
+     * Получение списка всех учителей
+     * @return
+     */
     @Override
     public ArrayList<Teacher> getAllTeachers() {
         ArrayList<Teacher> teachers = new ArrayList<>();

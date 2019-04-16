@@ -24,12 +24,16 @@ public class StudentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-
             Students students = new Students();
-            students.setArrayList(repository.getAllStudents());
+            if(req.getParameter("getAll").equals("true")) {
+                students.setArrayList(repository.getAllStudents());
+            }
+            else {
+                if(req.getParameter("id") != null) {
+                    students.setArrayList(repository.getStudents(Integer.parseInt(req.getParameter("id"))));
+                }
+            }
             String jsonString = gson.toJson(students, Students.class);
-
-
             resp.setContentType("application/json");
             resp.addHeader("Access-Control-Allow-Origin", "*");
             resp.setStatus(HttpStatus.OK);
