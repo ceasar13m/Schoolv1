@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class SubjectServlet extends HttpServlet {
 
@@ -24,10 +25,15 @@ public class SubjectServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Subject subject = new Subject();
-        subject.setName(req.getParameter("name"));
 
-        repository.addSubject(subject);
+
+        try {
+            Subject subject = new Subject();
+            subject.setName(req.getParameter("name"));
+            repository.addSubject(subject);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

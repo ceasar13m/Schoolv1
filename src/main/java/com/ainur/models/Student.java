@@ -3,7 +3,7 @@ package com.ainur.models;
 public class Student {
     private String firstName;
     private String secondName;
-    int gradeId;
+    private int gradeId;
 
     public String getFirstName() {
         return firstName;

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class GradeServlet extends HttpServlet {
 
@@ -22,10 +23,13 @@ public class GradeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Grade grade = new Grade();
-        grade.setName(req.getParameter("name"));
-
-        repository.addGrade(grade);
+        try {
+            Grade grade = new Grade();
+            grade.setName(req.getParameter("name"));
+            repository.addGrade(grade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

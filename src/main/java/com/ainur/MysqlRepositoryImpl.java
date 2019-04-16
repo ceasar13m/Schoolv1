@@ -83,73 +83,49 @@ public class MysqlRepositoryImpl implements Repository {
 
 
     /************************************************************************************************************
-     * Добавление в таблицу grades нового класса
+     *  Добавление в таблицу grades нового класса
      * @param grade
-     * @return
+     * @throws SQLException
      */
 
 
     @Override
-    public boolean addGrade(Grade grade) {
+    public void addGrade(Grade grade) throws SQLException {
         Statement statement;
-        try {
-            statement = connection.createStatement();
-            statement.executeUpdate("use school");
+        statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String gradeInsertString = "insert into grades set name = '" + grade.getName() + "';";
+        statement.executeUpdate(gradeInsertString);
 
-            String tempString = "select * from grades where name = '" + grade.getName() + "';";
-            ResultSet resultSet = statement.executeQuery(tempString);
-
-            if (resultSet.next()) {
-                return false;
-            } else {
-                String gradeInsertString = "insert into grades set name = '" + grade.getName() + "';";
-                statement.executeUpdate(gradeInsertString);
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
 
     /************************************************************************************************************
-     * Добавление в таблицу subjects нового предмета
+     *  Добавление в таблицу subjects нового предмета
      * @param subject
-     * @return
+     * @throws SQLException
      */
 
     @Override
-    public boolean addSubject(Subject subject) {
+    public void addSubject(Subject subject) throws SQLException {
         Statement statement;
-        try {
-            statement = connection.createStatement();
-            statement.executeUpdate("use school");
 
-            String tempString = "select * from subjects where name = '" + subject.getName() + "';";
-            ResultSet resultSet = statement.executeQuery(tempString);
+        statement = connection.createStatement();
+        statement.executeUpdate("use school");
 
-            if (resultSet.next()) {
-                return false;
-            } else {
-                String subjectInsertString = "insert into subjects set name = '" + subject.getName() + "';";
-                statement.executeUpdate(subjectInsertString);
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        String subjectInsertString = "insert into subjects set name = '" + subject.getName() + "';";
+        statement.executeUpdate(subjectInsertString);
+
     }
 
 
     /************************************************************************************************************
-     * Добавление в таблицу teachers нового учителя
+     *  Добавление в таблицу teachers нового учителя
      * @param teacher
-     * @return
+     * @throws SQLException
      */
     @Override
-    public void addTeacher(Teacher teacher) throws SQLException{
+    public void addTeacher(Teacher teacher) throws SQLException {
         Statement statement;
         statement = connection.createStatement();
 
@@ -161,25 +137,29 @@ public class MysqlRepositoryImpl implements Repository {
     }
 
 
+    /************************************************************************************************************
+     * Удаление учителя
+     * @param id
+     * @throws SQLException
+     */
     @Override
-    public boolean removeTeacher(int id) {
-        try {
+    public void removeTeacher(int id) throws SQLException {
+
             Statement statement = connection.createStatement();
             statement.executeUpdate("use school");
             String removeTeacherString = "delete from teachers where id = " + id;
             statement.executeUpdate(removeTeacherString);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+
     }
 
 
     /************************************************************************************************************
-     * Добавление в таблицу students нового студента
+
+
+    /**
+     *  Добавление в таблицу students нового студента
      * @param student
-     * @return
+     * @throws SQLException
      */
     @Override
     public void addStudent(Student student) throws SQLException {
@@ -197,28 +177,68 @@ public class MysqlRepositoryImpl implements Repository {
     }
 
 
+    /************************************************************************************************************
+     * Удаление студента
+     * @param id
+     * @throws SQLException
+     */
     @Override
-    public boolean removeStudent(int id) {
-        try {
+    public void removeStudent(int id) throws SQLException {
             Statement statement = connection.createStatement();
             statement.executeUpdate("use school");
             String removeStudentString = "delete from students where id =" + id;
             statement.executeUpdate(removeStudentString);
-            return true;
+
+    }
+
+
+
+    @Override
+    public ArrayList<Student> getAllStudents() {
+        ArrayList<Student> students = new ArrayList<>();
+
+        Statement statement;
+        try {
+            statement = connection.createStatement();
+            statement.executeUpdate("use school");
+            String tempString = "select * from students";
+            ResultSet resultSet = statement.executeQuery(tempString);
+            while(resultSet.next()) {
+                Student student = new Student();
+                student.setFirstName(resultSet.getString(2));
+                student.setSecondName(resultSet.getString(3));
+                student.setGradeId(Integer.parseInt(resultSet.getString(4)));
+                students.add(student);
+            }
+
+            return students;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
     @Override
-    public ArrayList<Student> getAllStudents() {
-        return null;
-    }
-
-    @Override
     public ArrayList<Teacher> getAllTeachers() {
-        return null;
+        ArrayList<Teacher> teachers = new ArrayList<>();
+
+        Statement statement;
+        try {
+            statement = connection.createStatement();
+            statement.executeUpdate("use school");
+            String tempString = "select * from teachers";
+            ResultSet resultSet = statement.executeQuery(tempString);
+            while(resultSet.next()) {
+                Teacher teacher = new Teacher();
+                teacher.setFirstName(resultSet.getString(2));
+                teacher.setSecondName(resultSet.getString(3));
+                teachers.add(teacher);
+            }
+            return teachers;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

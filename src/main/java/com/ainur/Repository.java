@@ -11,10 +11,10 @@ import java.util.ArrayList;
 public interface Repository {
     public void addTeacher(Teacher teacher) throws SQLException;
     public void addStudent(Student student) throws SQLException;
-    public boolean removeTeacher(int id);
-    public boolean removeStudent(int id);
-    public boolean addGrade(Grade grade);
-    public boolean addSubject(Subject subject);
+    public void removeTeacher(int id) throws SQLException;
+    public void removeStudent(int id) throws SQLException;
+    public void addGrade(Grade grade) throws SQLException;
+    public void addSubject(Subject subject) throws SQLException;
     public ArrayList<Student> getAllStudents();
     public ArrayList<Teacher> getAllTeachers();
 }
