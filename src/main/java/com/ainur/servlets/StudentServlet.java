@@ -3,6 +3,9 @@ package com.ainur.servlets;
 import com.ainur.MysqlRepositoryImpl;
 import com.ainur.Repository;
 import com.ainur.models.Student;
+import com.ainur.util.ErrorMessage;
+import com.ainur.util.HttpStatus;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,23 +13,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class StudentServlet extends HttpServlet
-{
+public class StudentServlet extends HttpServlet {
 
     Repository repository = new MysqlRepositoryImpl();
+    Gson gson = new Gson();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doGet(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Student student = new Student();
-        student.setFirstName(req.getParameter("firstName"));
-        student.setSecondName(req.getParameter("secondName"));
-        student.setGradeId(Integer.parseInt(req.getParameter("gradeId")));
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            Student student = gson.fromJson(req.getQueryString(), Student.class);
+            repository.addStudent(student);
+            resp.setStatus(HttpStatus.OK);
 
-        repository.addStudent(student);
+        } catch (Exception e) {
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(gson.toJson(errorMessage, ErrorMessage.class));
+        }
     }
 
     @Override
@@ -36,10 +45,8 @@ public class StudentServlet extends HttpServlet
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Student student = new Student();
-        student.setFirstName(req.getParameter("firstName"));
-        student.setSecondName(req.getParameter("secondName"));
-        student.setGradeId(Integer.parseInt(req.getParameter("gradeId")));
-        repository.removeStudent(student);
+
+        int id = Integer.parseInt(req.getParameter("id"));
+        repository.removeStudent(id);
     }
 }

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class TeacherServlet extends HttpServlet {
 
@@ -21,12 +22,14 @@ public class TeacherServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Teacher teacher = new Teacher();
-        teacher.setFirstName(req.getParameter("firstName"));
-        teacher.setSecondName(req.getParameter("secondName"));
-
-
-        repository.addTeacher(teacher);
+        try {
+            Teacher teacher = new Teacher();
+            teacher.setFirstName(req.getParameter("firstName"));
+            teacher.setSecondName(req.getParameter("secondName"));
+            repository.addTeacher(teacher);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -36,9 +39,7 @@ public class TeacherServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Teacher teacher = new Teacher();
-        teacher.setFirstName(req.getParameter("firstName"));
-        teacher.setSecondName(req.getParameter("secondName"));
-        repository.removeTeacher(teacher);
+        int id = Integer.parseInt(req.getParameter("id"));
+        repository.removeTeacher(id);
     }
 }

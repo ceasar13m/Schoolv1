@@ -5,13 +5,14 @@ import com.ainur.models.Student;
 import com.ainur.models.Subject;
 import com.ainur.models.Teacher;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface Repository {
-    public boolean addTeacher(Teacher teacher);
-    public boolean addStudent(Student student);
-    public boolean removeTeacher(Teacher teacher);
-    public boolean removeStudent(Student student);
+    public void addTeacher(Teacher teacher) throws SQLException;
+    public void addStudent(Student student) throws SQLException;
+    public boolean removeTeacher(int id);
+    public boolean removeStudent(int id);
     public boolean addGrade(Grade grade);
     public boolean addSubject(Subject subject);
     public ArrayList<Student> getAllStudents();
