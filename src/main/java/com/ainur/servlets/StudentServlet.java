@@ -25,7 +25,7 @@ public class StudentServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Students students = new Students();
-            if(req.getParameter("getAll").equals("true")) {
+            if(req.getParameterMap().containsKey("getAll") && req.getParameter("getAll").equals("true")) {
                 students.setArrayList(repository.getAllStudents());
             }
             else {
@@ -74,6 +74,7 @@ public class StudentServlet extends HttpServlet {
         try {
             int id = Integer.parseInt(req.getParameter("id"));
             repository.removeStudent(id);
+            resp.setStatus(HttpStatus.OK);
         } catch (SQLException e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();

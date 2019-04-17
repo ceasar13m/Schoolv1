@@ -72,6 +72,7 @@ public class TeacherServlet extends HttpServlet {
         try {
             int id = Integer.parseInt(req.getParameter("id"));
             repository.removeTeacher(id);
+            resp.setStatus(HttpStatus.OK);
         } catch (SQLException e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
