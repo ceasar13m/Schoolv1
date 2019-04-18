@@ -38,7 +38,7 @@ public class SubjectServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+        super.doPut(req, resp);
     }
 
     @Override

@@ -4,8 +4,10 @@ import com.ainur.MysqlRepositoryImpl;
 import com.ainur.Repository;
 import com.ainur.models.Student;
 import com.ainur.models.Students;
+import com.ainur.util.BadRequestException;
 import com.ainur.util.ErrorMessage;
 import com.ainur.util.HttpStatus;
+import com.ainur.util.NotFoundException;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -25,12 +27,11 @@ public class StudentServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Students students = new Students();
-            if(req.getParameterMap().containsKey("getAll") && req.getParameter("getAll").equals("true")) {
+            if (req.getParameterMap().containsKey("getAll") && req.getParameter("getAll").equals("true")) {
                 students.setArrayList(repository.getAllStudents());
-            }
-            else {
-                if(req.getParameterMap().containsKey("id") && !req.getParameter("id").equals("")) {
-                    students.setArrayList(repository.getStudents(Integer.parseInt(req.getParameter("id"))));
+            } else {
+                if (req.getParameterMap().containsKey("gradeId") && !req.getParameter("gradeId").equals("")) {
+                    students.setArrayList(repository.getStudents(Integer.parseInt(req.getParameter("gradeId"))));
                 }
             }
             String jsonString = gson.toJson(students, Students.class);
@@ -42,10 +43,23 @@ public class StudentServlet extends HttpServlet {
             resp.getWriter().flush();
 
 
+        } catch (NotFoundException e) {
+            resp.setStatus(HttpStatus.NOT_FOUND);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage);
+
+        } catch (NumberFormatException e) {
+            resp.setStatus(HttpStatus.BAD_REQUEST);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage);
+
         } catch (Exception e) {
-            e.printStackTrace();
-            PrintWriter writer = resp.getWriter();
-            writer.println(e.fillInStackTrace());
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(gson.toJson(errorMessage, ErrorMessage.class));
         }
     }
 
@@ -53,14 +67,30 @@ public class StudentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             Student student = gson.fromJson(req.getReader(), Student.class);
+
+            if(student == null) {
+                throw  new BadRequestException();
+            }
             repository.addStudent(student);
             resp.setStatus(HttpStatus.OK);
 
-        } catch (Exception e) {
+        }
+        catch (BadRequestException e) {
+            resp.setStatus(HttpStatus.BAD_REQUEST);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage);
+        }
+        catch (SQLException e) {
+            resp.setStatus(HttpStatus.FORBIDDEN);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage);
+        }catch (Exception e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(gson.toJson(errorMessage, ErrorMessage.class));
+            resp.getWriter().println(errorMessage);
         }
     }
 
@@ -72,14 +102,31 @@ public class StudentServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            int studentId = Integer.parseInt(req.getParameter("studentId"));
-            repository.removeStudent(studentId);
-            resp.setStatus(HttpStatus.OK);
-        } catch (SQLException e) {
+            if (req.getParameterMap().containsKey("studentId") && !req.getParameter("studentId").equals("")) {
+                repository.removeStudent(Integer.parseInt(req.getParameter("studentId")));
+                resp.setStatus(HttpStatus.OK);
+            } else {
+                resp.setStatus(HttpStatus.BAD_REQUEST);
+            }
+
+        } catch (NotFoundException e) {
+            resp.setStatus(HttpStatus.NOT_FOUND);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage);
+
+        } catch (NumberFormatException e) {
+            resp.setStatus(HttpStatus.BAD_REQUEST);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage);
+
+        } catch (Exception e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(gson.toJson(errorMessage, ErrorMessage.class));
+            resp.getWriter().println(errorMessage);
         }
+
     }
 }

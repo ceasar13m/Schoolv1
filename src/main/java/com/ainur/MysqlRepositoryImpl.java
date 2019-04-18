@@ -4,6 +4,7 @@ import com.ainur.models.Grade;
 import com.ainur.models.Student;
 import com.ainur.models.Subject;
 import com.ainur.models.Teacher;
+import com.ainur.util.NotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -83,7 +84,8 @@ public class MysqlRepositoryImpl implements Repository {
 
 
     /**
-     *  Добавление в таблицу grades нового класса
+     * Добавление в таблицу grades нового класса
+     *
      * @param grade
      * @throws SQLException
      */
@@ -99,7 +101,8 @@ public class MysqlRepositoryImpl implements Repository {
 
 
     /**
-     *  Добавление в таблицу subjects нового предмета
+     * Добавление в таблицу subjects нового предмета
+     *
      * @param subject
      * @throws SQLException
      */
@@ -118,7 +121,8 @@ public class MysqlRepositoryImpl implements Repository {
 
 
     /**
-     *  Добавление в таблицу teachers нового учителя
+     * Добавление в таблицу teachers нового учителя
+     *
      * @param teacher
      * @throws SQLException
      */
@@ -137,22 +141,24 @@ public class MysqlRepositoryImpl implements Repository {
 
     /**
      * Удаление учителя
+     *
      * @param teacherId
      * @throws SQLException
      */
     @Override
     public void removeTeacher(int teacherId) throws SQLException {
 
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("use school");
-            String removeTeacherString = "delete from teachers where id = " + teacherId;
-            statement.executeUpdate(removeTeacherString);
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String removeTeacherString = "delete from teachers where id = " + teacherId;
+        statement.executeUpdate(removeTeacherString);
 
     }
 
 
     /**
-     *  Добавление в таблицу students нового студента
+     * Добавление в таблицу students нового студента
+     *
      * @param student
      * @throws SQLException
      */
@@ -174,105 +180,113 @@ public class MysqlRepositoryImpl implements Repository {
 
     /**
      * Удаление студента
+     *
      * @param studentId
      * @throws SQLException
      */
     @Override
-    public void removeStudent(int studentId) throws SQLException {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("use school");
-            String removeStudentString = "delete from students where id =" + studentId;
-            statement.executeUpdate(removeStudentString);
+    public void removeStudent(int studentId) throws SQLException, NotFoundException {
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String tempString = "select * from students where id = " + studentId;
+        ResultSet resultSet = statement.executeQuery(tempString);
+        if (!resultSet.next())
+            throw new NotFoundException();
+
+        String removeStudentString = "delete from students where id =" + studentId;
+        statement.executeUpdate(removeStudentString);
 
     }
 
 
     /**
      * Получение списка студентов определенного класса
+     *
      * @param gradeId
      * @return
      */
     @Override
-    public ArrayList<Student> getStudents(int gradeId) {
+    public ArrayList<Student> getStudents(int gradeId) throws Exception, NotFoundException {
         ArrayList<Student> students = new ArrayList<>();
 
         Statement statement;
-        try {
-            statement = connection.createStatement();
-            statement.executeUpdate("use school");
-            String tempString = "select * from students where gradeId = " + gradeId;
-            ResultSet resultSet = statement.executeQuery(tempString);
-            while(resultSet.next()) {
-                Student student = new Student();
-                student.setFirstName(resultSet.getString(2));
-                student.setSecondName(resultSet.getString(3));
-                student.setGradeId(Integer.parseInt(resultSet.getString(4)));
-                students.add(student);
-            }
 
-            return students;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        statement = connection.createStatement();
+        statement.executeUpdate("use school");
+
+        String tempString = "select * from students where gradeId = " + gradeId;
+        ResultSet resultSet = statement.executeQuery(tempString);
+        if (!resultSet.next())
+            throw new NotFoundException();
+
+        tempString = "select * from students where gradeId = " + gradeId;
+        resultSet = statement.executeQuery(tempString);
+
+        while (resultSet.next()) {
+            Student student = new Student();
+            student.setFirstName(resultSet.getString(2));
+            student.setSecondName(resultSet.getString(3));
+            student.setGradeId(Integer.parseInt(resultSet.getString(4)));
+            students.add(student);
         }
+
+        return students;
+
     }
 
 
     /**
      * Получение списка всех студентов
+     *
      * @return
      */
     @Override
-    public ArrayList<Student> getAllStudents() {
+    public ArrayList<Student> getAllStudents() throws SQLException {
         ArrayList<Student> students = new ArrayList<>();
 
         Statement statement;
-        try {
-            statement = connection.createStatement();
-            statement.executeUpdate("use school");
-            String tempString = "select * from students";
-            ResultSet resultSet = statement.executeQuery(tempString);
-            while(resultSet.next()) {
-                Student student = new Student();
-                student.setFirstName(resultSet.getString(2));
-                student.setSecondName(resultSet.getString(3));
-                student.setGradeId(Integer.parseInt(resultSet.getString(4)));
-                students.add(student);
-            }
 
-            return students;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String tempString = "select * from students";
+        ResultSet resultSet = statement.executeQuery(tempString);
+        while (resultSet.next()) {
+            Student student = new Student();
+            student.setFirstName(resultSet.getString(2));
+            student.setSecondName(resultSet.getString(3));
+            student.setGradeId(Integer.parseInt(resultSet.getString(4)));
+            students.add(student);
         }
+
+        return students;
+
     }
 
 
     /**
      * Получение списка всех учителей
+     *
      * @return
      */
     @Override
-    public ArrayList<Teacher> getAllTeachers() {
+    public ArrayList<Teacher> getAllTeachers() throws SQLException {
         ArrayList<Teacher> teachers = new ArrayList<>();
 
         Statement statement;
-        try {
-            statement = connection.createStatement();
-            statement.executeUpdate("use school");
-            String tempString = "select * from teachers";
-            ResultSet resultSet = statement.executeQuery(tempString);
-            while(resultSet.next()) {
-                Teacher teacher = new Teacher();
-                teacher.setFirstName(resultSet.getString(2));
-                teacher.setSecondName(resultSet.getString(3));
-                teachers.add(teacher);
-            }
-            return teachers;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String tempString = "select * from teachers";
+
+        ResultSet resultSet = statement.executeQuery(tempString);
+        while (resultSet.next()) {
+            Teacher teacher = new Teacher();
+            teacher.setFirstName(resultSet.getString(2));
+            teacher.setSecondName(resultSet.getString(3));
+            teachers.add(teacher);
         }
+        return teachers;
+
     }
+
 
 }

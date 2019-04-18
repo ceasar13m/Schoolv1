@@ -3,7 +3,9 @@ package com.ainur.servlets;
 import com.ainur.MysqlRepositoryImpl;
 import com.ainur.Repository;
 import com.ainur.models.Grade;
+import com.ainur.util.ErrorMessage;
 import com.ainur.util.HttpStatus;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +17,7 @@ import java.sql.SQLException;
 public class GradeServlet extends HttpServlet {
 
     Repository repository = new MysqlRepositoryImpl();
+    Gson gson = new Gson();
 
 
     @Override
@@ -25,13 +28,20 @@ public class GradeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            Grade grade = new Grade();
-            grade.setName(req.getParameter("name"));
-            repository.addGrade(grade);
+            if (req.getParameterMap().containsKey("name") && req.getParameter("name") != null && !req.getParameter("name").isEmpty()) {
+                Grade grade = new Grade();
+                grade.setName(req.getParameter("name"));
+                repository.addGrade(grade);
 
-            resp.setStatus(HttpStatus.OK);
+            } else {
+                resp.setStatus(HttpStatus.BAD_REQUEST);
+            }
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(gson.toJson(errorMessage, ErrorMessage.class));
         }
     }
 
