@@ -3,6 +3,7 @@ package com.ainur.servlets;
 import com.ainur.MysqlRepositoryImpl;
 import com.ainur.Repository;
 import com.ainur.models.Grade;
+import com.ainur.util.HttpStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,6 +28,8 @@ public class GradeServlet extends HttpServlet {
             Grade grade = new Grade();
             grade.setName(req.getParameter("name"));
             repository.addGrade(grade);
+
+            resp.setStatus(HttpStatus.OK);
         } catch (SQLException e) {
             e.printStackTrace();
         }

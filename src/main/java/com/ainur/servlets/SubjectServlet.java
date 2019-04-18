@@ -3,6 +3,7 @@ package com.ainur.servlets;
 import com.ainur.MysqlRepositoryImpl;
 import com.ainur.Repository;
 import com.ainur.models.Subject;
+import com.ainur.util.HttpStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,12 +26,11 @@ public class SubjectServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-
         try {
             Subject subject = new Subject();
             subject.setName(req.getParameter("name"));
             repository.addSubject(subject);
+            resp.setStatus(HttpStatus.OK);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -38,7 +38,7 @@ public class SubjectServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        super.doDelete(req, resp);
     }
 
     @Override

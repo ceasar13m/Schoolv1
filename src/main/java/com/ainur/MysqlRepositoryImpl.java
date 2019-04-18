@@ -22,7 +22,7 @@ public class MysqlRepositoryImpl implements Repository {
     private static Connection connection;
 
 
-    /************************************************************************************************************
+    /**
      * Конструктор Singleton класса
      * Создается БД school
      * В БД создаются пять:
@@ -82,13 +82,11 @@ public class MysqlRepositoryImpl implements Repository {
     }
 
 
-    /************************************************************************************************************
+    /**
      *  Добавление в таблицу grades нового класса
      * @param grade
      * @throws SQLException
      */
-
-
     @Override
     public void addGrade(Grade grade) throws SQLException {
         Statement statement;
@@ -100,7 +98,7 @@ public class MysqlRepositoryImpl implements Repository {
     }
 
 
-    /************************************************************************************************************
+    /**
      *  Добавление в таблицу subjects нового предмета
      * @param subject
      * @throws SQLException
@@ -119,7 +117,7 @@ public class MysqlRepositoryImpl implements Repository {
     }
 
 
-    /************************************************************************************************************
+    /**
      *  Добавление в таблицу teachers нового учителя
      * @param teacher
      * @throws SQLException
@@ -137,23 +135,20 @@ public class MysqlRepositoryImpl implements Repository {
     }
 
 
-    /************************************************************************************************************
+    /**
      * Удаление учителя
-     * @param id
+     * @param teacherId
      * @throws SQLException
      */
     @Override
-    public void removeTeacher(int id) throws SQLException {
+    public void removeTeacher(int teacherId) throws SQLException {
 
             Statement statement = connection.createStatement();
             statement.executeUpdate("use school");
-            String removeTeacherString = "delete from teachers where id = " + id;
+            String removeTeacherString = "delete from teachers where id = " + teacherId;
             statement.executeUpdate(removeTeacherString);
 
     }
-
-
-    /************************************************************************************************************
 
 
     /**
@@ -177,35 +172,35 @@ public class MysqlRepositoryImpl implements Repository {
     }
 
 
-    /************************************************************************************************************
+    /**
      * Удаление студента
-     * @param id
+     * @param studentId
      * @throws SQLException
      */
     @Override
-    public void removeStudent(int id) throws SQLException {
+    public void removeStudent(int studentId) throws SQLException {
             Statement statement = connection.createStatement();
             statement.executeUpdate("use school");
-            String removeStudentString = "delete from students where id =" + id;
+            String removeStudentString = "delete from students where id =" + studentId;
             statement.executeUpdate(removeStudentString);
 
     }
 
 
-    /************************************************************************************************************
+    /**
      * Получение списка студентов определенного класса
-     * @param id
+     * @param gradeId
      * @return
      */
     @Override
-    public ArrayList<Student> getStudents(int id) {
+    public ArrayList<Student> getStudents(int gradeId) {
         ArrayList<Student> students = new ArrayList<>();
 
         Statement statement;
         try {
             statement = connection.createStatement();
             statement.executeUpdate("use school");
-            String tempString = "select * from students where gradeId = " + id;
+            String tempString = "select * from students where gradeId = " + gradeId;
             ResultSet resultSet = statement.executeQuery(tempString);
             while(resultSet.next()) {
                 Student student = new Student();
@@ -223,7 +218,7 @@ public class MysqlRepositoryImpl implements Repository {
     }
 
 
-    /*************************************************************************************************************
+    /**
      * Получение списка всех студентов
      * @return
      */
@@ -253,7 +248,7 @@ public class MysqlRepositoryImpl implements Repository {
     }
 
 
-    /**************************************************************************************************************
+    /**
      * Получение списка всех учителей
      * @return
      */

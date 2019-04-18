@@ -29,7 +29,7 @@ public class StudentServlet extends HttpServlet {
                 students.setArrayList(repository.getAllStudents());
             }
             else {
-                if(req.getParameter("id") != null) {
+                if(req.getParameterMap().containsKey("id") && !req.getParameter("id").equals("")) {
                     students.setArrayList(repository.getStudents(Integer.parseInt(req.getParameter("id"))));
                 }
             }
@@ -72,8 +72,8 @@ public class StudentServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            int id = Integer.parseInt(req.getParameter("id"));
-            repository.removeStudent(id);
+            int studentId = Integer.parseInt(req.getParameter("studentId"));
+            repository.removeStudent(studentId);
             resp.setStatus(HttpStatus.OK);
         } catch (SQLException e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
