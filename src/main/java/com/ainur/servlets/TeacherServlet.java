@@ -49,7 +49,6 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            System.out.println(req.getReader());
             Teacher teacher = gson.fromJson(req.getReader(), Teacher.class);
             repository.addTeacher(teacher);
             resp.setStatus(HttpStatus.OK);
@@ -58,7 +57,7 @@ public class TeacherServlet extends HttpServlet {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(gson.toJson(errorMessage, ErrorMessage.class));
+            resp.getWriter().println(errorMessage.getMessage());
         }
     }
 
@@ -77,7 +76,7 @@ public class TeacherServlet extends HttpServlet {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(gson.toJson(errorMessage, ErrorMessage.class));
+            resp.getWriter().println(errorMessage.getMessage());
         }
     }
 }

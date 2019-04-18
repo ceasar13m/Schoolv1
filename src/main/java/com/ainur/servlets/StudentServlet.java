@@ -4,7 +4,6 @@ import com.ainur.MysqlRepositoryImpl;
 import com.ainur.Repository;
 import com.ainur.models.Student;
 import com.ainur.models.Students;
-import com.ainur.util.BadRequestException;
 import com.ainur.util.ErrorMessage;
 import com.ainur.util.HttpStatus;
 import com.ainur.util.NotFoundException;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 
 public class StudentServlet extends HttpServlet {
@@ -30,7 +28,7 @@ public class StudentServlet extends HttpServlet {
             if (req.getParameterMap().containsKey("getAll") && req.getParameter("getAll").equals("true")) {
                 students.setArrayList(repository.getAllStudents());
             } else {
-                if (req.getParameterMap().containsKey("gradeId") && !req.getParameter("gradeId").equals("")) {
+                if (req.getParameterMap().containsKey("gradeId") && !req.getParameter("gradeId").isEmpty()) {
                     students.setArrayList(repository.getStudents(Integer.parseInt(req.getParameter("gradeId"))));
                 }
             }
@@ -47,19 +45,19 @@ public class StudentServlet extends HttpServlet {
             resp.setStatus(HttpStatus.NOT_FOUND);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(errorMessage);
+            resp.getWriter().println(errorMessage.getMessage());
 
         } catch (NumberFormatException e) {
             resp.setStatus(HttpStatus.BAD_REQUEST);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(errorMessage);
+            resp.getWriter().println(errorMessage.getMessage());
 
         } catch (Exception e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(gson.toJson(errorMessage, ErrorMessage.class));
+            resp.getWriter().println(errorMessage.getMessage());
         }
     }
 
@@ -67,30 +65,21 @@ public class StudentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             Student student = gson.fromJson(req.getReader(), Student.class);
-
-            if(student == null) {
-                throw  new BadRequestException();
-            }
             repository.addStudent(student);
             resp.setStatus(HttpStatus.OK);
 
         }
-        catch (BadRequestException e) {
-            resp.setStatus(HttpStatus.BAD_REQUEST);
-            ErrorMessage errorMessage = new ErrorMessage();
-            errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(errorMessage);
-        }
+
         catch (SQLException e) {
             resp.setStatus(HttpStatus.FORBIDDEN);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(errorMessage);
+            resp.getWriter().println(errorMessage.getMessage());
         }catch (Exception e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(errorMessage);
+            resp.getWriter().println(errorMessage.getMessage());
         }
     }
 
@@ -113,19 +102,19 @@ public class StudentServlet extends HttpServlet {
             resp.setStatus(HttpStatus.NOT_FOUND);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(errorMessage);
+            resp.getWriter().println(errorMessage.getMessage());
 
         } catch (NumberFormatException e) {
             resp.setStatus(HttpStatus.BAD_REQUEST);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(errorMessage);
+            resp.getWriter().println(errorMessage.getMessage());
 
         } catch (Exception e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(errorMessage);
+            resp.getWriter().println(errorMessage.getMessage());
         }
 
     }
