@@ -23,6 +23,8 @@ public class MysqlRepositoryImpl implements Repository {
     private static Connection connection;
 
 
+
+
     /**
      * Конструктор Singleton класса
      * Создается БД school
@@ -291,6 +293,18 @@ public class MysqlRepositoryImpl implements Repository {
         }
         return teachers;
 
+    }
+
+    @Override
+    public void assignSubjectToTeacher(int idTeacher, int idSubject) throws SQLException {
+        Statement statement;
+        statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String InsertString = "insert into teacherssubjects (teacherId, subjectId) " + "values (" +
+                idTeacher + "," +
+                idSubject + ");";
+
+        statement.executeUpdate(InsertString);
     }
 
 

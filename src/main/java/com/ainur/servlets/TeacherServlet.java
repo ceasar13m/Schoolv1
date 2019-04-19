@@ -54,11 +54,10 @@ public class TeacherServlet extends HttpServlet {
                             (!teacher.getSecondName().isEmpty()));
 
 
-            if(isCorrect) {
+            if (isCorrect) {
                 repository.addTeacher(teacher);
                 resp.setStatus(HttpStatus.OK);
-            }
-            else
+            } else
                 resp.setStatus(HttpStatus.BAD_REQUEST);
 
         } catch (SQLException e) {
@@ -76,7 +75,25 @@ public class TeacherServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        try {
+            boolean isCorrect = (req.getParameterMap().containsKey("teacherId")
+                    && (!req.getParameter("teacherId").isEmpty())
+                    && (req.getParameterMap().containsKey("subjectId")
+                    && !req.getParameter("subjectId").isEmpty()));
+            if (isCorrect) {
+                int teacherId = Integer.parseInt(req.getParameter("teacherId"));
+                int subjectId = Integer.parseInt(req.getParameter("subjectId"));
+
+                repository.assignSubjectToTeacher(teacherId, subjectId);
+                resp.setStatus(HttpStatus.OK);
+            } else
+                resp.setStatus(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
+        }
     }
 
     @Override

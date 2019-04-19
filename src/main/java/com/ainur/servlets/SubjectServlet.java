@@ -38,12 +38,6 @@ public class SubjectServlet extends HttpServlet {
             } else
                 resp.setStatus(HttpStatus.BAD_REQUEST);
 
-
-        } catch (SQLException e) {
-            resp.setStatus(HttpStatus.FORBIDDEN);
-            ErrorMessage errorMessage = new ErrorMessage();
-            errorMessage.setMessage(e.getMessage());
-            resp.getWriter().println(errorMessage.getMessage());
         } catch (Exception e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
