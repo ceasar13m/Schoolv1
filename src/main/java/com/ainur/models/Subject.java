@@ -1,6 +1,8 @@
 package com.ainur.models;
 
 public class Subject {
+    private String name;
+
     public String getName() {
         return name;
     }
@@ -8,7 +10,5 @@ public class Subject {
     public void setName(String name) {
         this.name = name;
     }
-
-    private String name;
 
 }

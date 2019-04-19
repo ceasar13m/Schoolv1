@@ -65,17 +65,25 @@ public class StudentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             Student student = gson.fromJson(req.getReader(), Student.class);
-            repository.addStudent(student);
-            resp.setStatus(HttpStatus.OK);
+            boolean isCorrect = (student.getFirstName() != null) &&
+                            (!student.getFirstName().isEmpty() &&
+                            (student.getSecondName() != null) &&
+                            (!student.getSecondName().isEmpty()));
 
-        }
 
-        catch (SQLException e) {
+            if(isCorrect) {
+                repository.addStudent(student);
+                resp.setStatus(HttpStatus.OK);
+            }
+            else
+                resp.setStatus(HttpStatus.BAD_REQUEST);
+
+        } catch (SQLException e) {
             resp.setStatus(HttpStatus.FORBIDDEN);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
             resp.getWriter().println(errorMessage.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());

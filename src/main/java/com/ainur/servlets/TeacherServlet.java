@@ -6,6 +6,7 @@ import com.ainur.models.Teacher;
 import com.ainur.models.Teachers;
 import com.ainur.util.ErrorMessage;
 import com.ainur.util.HttpStatus;
+import com.ainur.util.NotFoundException;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -25,11 +26,9 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-
             Teachers teachers = new Teachers();
             teachers.setArrayList(repository.getAllTeachers());
             String jsonString = gson.toJson(teachers, Teachers.class);
-
 
             resp.setContentType("application/json");
             resp.addHeader("Access-Control-Allow-Origin", "*");
@@ -37,12 +36,11 @@ public class TeacherServlet extends HttpServlet {
 
             resp.getWriter().println(jsonString);
             resp.getWriter().flush();
-
-
         } catch (Exception e) {
-            e.printStackTrace();
-            PrintWriter writer = resp.getWriter();
-            writer.println(e.fillInStackTrace());
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
         }
     }
 
@@ -50,9 +48,24 @@ public class TeacherServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Teacher teacher = gson.fromJson(req.getReader(), Teacher.class);
-            repository.addTeacher(teacher);
-            resp.setStatus(HttpStatus.OK);
+            boolean isCorrect = (teacher.getFirstName() != null) &&
+                    (!teacher.getFirstName().isEmpty() &&
+                            (teacher.getSecondName() != null) &&
+                            (!teacher.getSecondName().isEmpty()));
 
+
+            if(isCorrect) {
+                repository.addTeacher(teacher);
+                resp.setStatus(HttpStatus.OK);
+            }
+            else
+                resp.setStatus(HttpStatus.BAD_REQUEST);
+
+        } catch (SQLException e) {
+            resp.setStatus(HttpStatus.FORBIDDEN);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
         } catch (Exception e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
@@ -69,10 +82,25 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            int id = Integer.parseInt(req.getParameter("id"));
-            repository.removeTeacher(id);
-            resp.setStatus(HttpStatus.OK);
-        } catch (SQLException e) {
+            if (req.getParameterMap().containsKey("teacherId") && !req.getParameter("teacherId").isEmpty()) {
+                repository.removeTeacher(Integer.parseInt(req.getParameter("teacherId")));
+                resp.setStatus(HttpStatus.OK);
+            } else {
+                resp.setStatus(HttpStatus.BAD_REQUEST);
+            }
+        } catch (NotFoundException e) {
+            resp.setStatus(HttpStatus.NOT_FOUND);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
+
+        } catch (NumberFormatException e) {
+            resp.setStatus(HttpStatus.BAD_REQUEST);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
+
+        } catch (Exception e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());

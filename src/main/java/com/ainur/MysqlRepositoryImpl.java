@@ -45,13 +45,13 @@ public class MysqlRepositoryImpl implements Repository {
             statement.executeUpdate(
                     "CREATE TABLE if not exists grades (" +
                             "    id int AUTO_INCREMENT not null," +
-                            "    name TEXT NOT NULL," +
+                            "    name varchar (3) NOT NULL," +
                             "    primary key (id)" +
                             ");");
             statement.executeUpdate(
                     "CREATE TABLE if not exists students (" +
                             "    id int AUTO_INCREMENT NOT NULL  PRIMARY KEY," +
-                            "    firstName TEXT not null," +
+                            "    firstName varchar (30) not null," +
                             "    secondName TEXT not null," +
                             "    gradeId int not null," +
                             "    FOREIGN KEY (gradeId) REFERENCES grades(id)" +
@@ -59,13 +59,13 @@ public class MysqlRepositoryImpl implements Repository {
             statement.executeUpdate(
                     "CREATE TABLE if not exists subjects (" +
                             "    id int AUTO_INCREMENT NOT NULL  PRIMARY KEY," +
-                            "    name TEXT NOT NULL\n" +
+                            "    name varchar(30) NOT NULL\n" +
                             ");");
             statement.executeUpdate(
                     "CREATE TABLE if not exists teachers (" +
                             "    id int AUTO_INCREMENT NOT NULL  PRIMARY KEY," +
-                            "    firstName TEXT not null," +
-                            "    secondName TEXT not null" +
+                            "    firstName varchar (30) not null," +
+                            "    secondName varchar (30) not null" +
                             ");");
 
             statement.executeUpdate(
@@ -146,12 +146,17 @@ public class MysqlRepositoryImpl implements Repository {
      * @throws SQLException
      */
     @Override
-    public void removeTeacher(int teacherId) throws SQLException {
+    public void removeTeacher(int teacherId) throws SQLException, NotFoundException {
 
         Statement statement = connection.createStatement();
         statement.executeUpdate("use school");
-        String removeTeacherString = "delete from teachers where id = " + teacherId;
-        statement.executeUpdate(removeTeacherString);
+        String tempString = "select * from teachers where id = " + teacherId;
+        ResultSet resultSet = statement.executeQuery(tempString);
+        if (!resultSet.next())
+            throw new NotFoundException();
+
+        String removeStudentString = "delete from teachers where id =" + teacherId;
+        statement.executeUpdate(removeStudentString);
 
     }
 

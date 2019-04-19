@@ -3,7 +3,9 @@ package com.ainur.servlets;
 import com.ainur.MysqlRepositoryImpl;
 import com.ainur.Repository;
 import com.ainur.models.Subject;
+import com.ainur.util.ErrorMessage;
 import com.ainur.util.HttpStatus;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +18,7 @@ public class SubjectServlet extends HttpServlet {
 
 
     Repository repository = new MysqlRepositoryImpl();
+    Gson gson = new Gson();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -23,16 +26,29 @@ public class SubjectServlet extends HttpServlet {
     }
 
 
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            Subject subject = new Subject();
-            subject.setName(req.getParameter("name"));
-            repository.addSubject(subject);
-            resp.setStatus(HttpStatus.OK);
+            Subject subject = gson.fromJson(req.getReader(), Subject.class);
+
+            boolean isCorrect = (subject.getName() != null) && (!subject.getName().isEmpty());
+            if (isCorrect) {
+                repository.addSubject(subject);
+                resp.setStatus(HttpStatus.OK);
+            } else
+                resp.setStatus(HttpStatus.BAD_REQUEST);
+
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            resp.setStatus(HttpStatus.FORBIDDEN);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
+        } catch (Exception e) {
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
         }
     }
 

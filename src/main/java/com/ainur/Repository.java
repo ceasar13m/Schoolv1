@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public interface Repository {
     public void addTeacher(Teacher teacher) throws SQLException;
     public void addStudent(Student student) throws SQLException;
-    public void removeTeacher(int teacherId) throws SQLException;
+    public void removeTeacher(int teacherId) throws SQLException, NotFoundException;
     public void removeStudent(int studentId) throws SQLException, Exception, NotFoundException;
     public void addGrade(Grade grade) throws SQLException;
     public void addSubject(Subject subject) throws SQLException;
