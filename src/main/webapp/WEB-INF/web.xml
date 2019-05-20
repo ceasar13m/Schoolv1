@@ -4,6 +4,15 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
+    <!--<filter>-->
+        <!--<filter-name>CorsFilter</filter-name>-->
+        <!--<filter-class>org.apache.catalina.filters.CorsFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>CorsFilter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
     <!-- add Student com.ainur.servlets -->
     <servlet>
         <servlet-name>studentServlet</servlet-name>
@@ -48,5 +57,6 @@
         <servlet-name>subjectServlet</servlet-name>
         <url-pattern>/subjects</url-pattern>
     </servlet-mapping>
+
 
 </web-app>

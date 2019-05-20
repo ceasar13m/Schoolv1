@@ -130,6 +130,7 @@ public class MysqlRepositoryImpl implements Repository {
      */
     @Override
     public void addTeacher(Teacher teacher) throws SQLException {
+
         Statement statement;
         statement = connection.createStatement();
 

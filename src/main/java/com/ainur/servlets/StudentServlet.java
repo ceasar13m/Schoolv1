@@ -23,6 +23,7 @@ public class StudentServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("hello");
         try {
             Students students = new Students();
             if (req.getParameterMap().containsKey("getAll") && req.getParameter("getAll").equals("true")) {
