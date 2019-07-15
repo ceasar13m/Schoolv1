@@ -37,6 +37,8 @@ public class StudentServlet extends HttpServlet {
             resp.addHeader("Access-Control-Allow-Origin", "*");
             resp.setStatus(HttpStatus.OK);
 
+            System.out.println(jsonString);
+
             resp.getWriter().println(jsonString);
             resp.getWriter().flush();
 
