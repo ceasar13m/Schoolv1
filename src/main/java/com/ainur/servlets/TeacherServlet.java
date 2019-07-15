@@ -34,7 +34,6 @@ public class TeacherServlet extends HttpServlet {
             resp.setContentType("application/json");
             resp.addHeader("Access-Control-Allow-Origin", "*");
             resp.setStatus(HttpStatus.OK);
-
             resp.getWriter().println(jsonString);
             resp.getWriter().flush();
         } catch (Exception e) {
