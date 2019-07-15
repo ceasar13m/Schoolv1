@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width-device-width, initial-scale-1">
+    <title>Main</title>
+</head>
+
+
+<body>
+<div id="menu">
+    <input type="button" value="Teachers" id="teachersButton">
+    <input type="button" value="Students" id="studentsButton">
+    <input type="button" value="Grades" id="gradesButton">
+    <input type="button" value="Subjects" id="subjectsButton">
+</div>
+
+
+<div id="content">
+
+</div>
+
+<script>
+    let teachersButton = document.getElementById("teachersButton");
+    let studentsButton = document.getElementById("studentsButton");
+    let gradesButton = document.getElementById("gradesButton");
+    let subjectsButton = document.getElementById("subjectsButton");
+
+
+    let teachersButtonClick = function () {
+
+
+        let request = new XMLHttpRequest();
+        request.open("GET", "http://localhost:8080/teachers", true);
+        request.onreadystatechange = function() {
+            if(request.status == 200 && request.readyState == 4) {
+                let content = document.getElementById("content");
+                let teachers = JSON.parse(request.responseText).arrayList;
+                for(var teacher in teachers) {
+                    let tr = document.createElement("tr");
+
+                    let td1 = document.createElement("td");
+                    let td2 = document.createElement("td");
+
+                    td1.innerHTML = teachers[teacher].firstName;
+                    td2.innerHTML = teachers[teacher].secondName;
+
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+
+
+                    content.appendChild(tr);
+                }
+            }
+        };
+        request.send();
+
+
+        //document.getElementById("content").innerHTML = "Teachers";
+    }
+
+    let studentsButtonClick = function () {
+        document.getElementById("content").innerHTML = "Students";
+    }
+
+    let gradesButtonClick = function () {
+        document.getElementById("content").innerHTML = "Grades";
+    }
+
+    let subjectsButtonClick = function () {
+        document.getElementById("content").innerHTML = "Subjects";
+    }
+
+
+        teachersButton.addEventListener("click", teachersButtonClick);
+        studentsButton.addEventListener("click", studentsButtonClick);
+        gradesButton.addEventListener("click", gradesButtonClick);
+        subjectsButton.addEventListener("click", subjectsButtonClick);
+
+</script>
+
+
+</body>
+</html>
