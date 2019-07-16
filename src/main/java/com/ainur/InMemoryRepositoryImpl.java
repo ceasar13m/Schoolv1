@@ -19,6 +19,7 @@ public class InMemoryRepositoryImpl implements Repository {
     private ConcurrentHashMap<Subject, Integer> subjectsStorage = new ConcurrentHashMap<>();
 
 
+
     @Override
     public void addTeacher(Teacher teacher) throws SQLException {
 
@@ -67,5 +68,10 @@ public class InMemoryRepositoryImpl implements Repository {
     @Override
     public void assignSubjectToTeacher(int idTeacher, int idSubject) throws SQLException {
 
+    }
+
+    @Override
+    public ArrayList<Grade> getAllGrades() throws SQLException {
+        return null;
     }
 }

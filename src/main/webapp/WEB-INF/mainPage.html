@@ -3,24 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width-device-width, initial-scale-1">
+    <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <title>Main</title>
 </head>
 
 
 <body>
-<div id="menu">
-    <input type="button" value="Teachers" id="teachersButton">
-    <input type="button" value="Students" id="studentsButton">
-    <input type="button" value="Grades" id="gradesButton">
-    <input type="button" value="Subjects" id="subjectsButton">
+
+<!--=====================================================================
+
+Анимация загрузки информации с сервера
+
+=========================================================================-->
+
+
+<div id="fountainG">
+    <div id="fountainG_1" class="fountainG"></div>
+    <div id="fountainG_2" class="fountainG"></div>
+    <div id="fountainG_3" class="fountainG"></div>
+    <div id="fountainG_4" class="fountainG"></div>
+    <div id="fountainG_5" class="fountainG"></div>
+    <div id="fountainG_6" class="fountainG"></div>
+    <div id="fountainG_7" class="fountainG"></div>
+    <div id="fountainG_8" class="fountainG"></div>
 </div>
 
 
-<div id="content">
 
-</div>
+<!--==========================================================================
+
+Блоки страницы
+
+=============================================================================-->
+
+
+
+<h3 class="widget-title">Virtual School</h3>
+
+<hr width=90% size="10" color=#eaeaea />
+</br>
+
+<table>
+
+    <tr>
+
+        <td valign="top">
+            <div class="widget" id="menu">
+
+                <ul class="widget-list">
+                    <li><a href="#" id="teachersButton" onclick="teachersButtonClick()">Teachers</a></li>
+                    <li><a href="#" id="studentsButton" onclick="studentsButtonClick()"> Students</a></li>
+                    <li><a href="#" id="gradesButton" onclick="gradesButtonClick()">Grades</a></li>
+                    <li><a href="#" id="subjectsButton" onclick="subjectsButtonClick()">Subjects</a></li>
+                </ul>
+            </div>
+        </td>
+
+        <td width="70%">
+            <div id="content">
+
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+<!--=============================================================================================
+
+Script
+
+==================================================================================================-->
+
+
+
 
 <script>
+    document.getElementById("fountainG").style.visibility = 'hidden';
     let teachersButton = document.getElementById("teachersButton");
     let studentsButton = document.getElementById("studentsButton");
     let gradesButton = document.getElementById("gradesButton");
@@ -30,13 +92,17 @@
     let teachersButtonClick = function () {
 
         document.getElementById("content").innerHTML = "";
+
+        document.getElementById("fountainG").style.visibility = 'visible';
+
         let request = new XMLHttpRequest();
         request.open("GET", "http://localhost:8080/teachers", true);
-        request.onreadystatechange = function() {
-            if(request.status == 200 && request.readyState == 4) {
+        request.onreadystatechange = function () {
+            if (request.status == 200 && request.readyState == 4) {
+
                 let content = document.getElementById("content");
                 let teachers = JSON.parse(request.responseText).arrayList;
-                for(var teacher in teachers) {
+                for (var teacher in teachers) {
                     let tr = document.createElement("tr");
 
                     let td1 = document.createElement("td");
@@ -50,6 +116,7 @@
 
 
                     content.appendChild(tr);
+                    document.getElementById("fountainG").style.visibility = 'hidden';
                 }
             }
         };
@@ -58,13 +125,16 @@
 
     let studentsButtonClick = function () {
         document.getElementById("content").innerHTML = "";
+        document.getElementById("fountainG").style.visibility = 'visible';
+
         let request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:8080/students?getAll=true", true);
-        request.onreadystatechange = function() {
-            if(request.status == 200 && request.readyState == 4) {
+        request.open("GET", "http://localhost:8080/students?gradeId=2", true);
+        request.onreadystatechange = function () {
+            if (request.status == 200 && request.readyState == 4) {
                 let content = document.getElementById("content");
+                content.boarder = 1;
                 let students = JSON.parse(request.responseText).arrayList;
-                for(var student in students) {
+                for (var student in students) {
                     let tr = document.createElement("tr");
 
                     let td1 = document.createElement("td");
@@ -82,6 +152,7 @@
 
 
                     content.appendChild(tr);
+                    document.getElementById("fountainG").style.visibility = 'hidden';
                 }
             }
         };
@@ -89,7 +160,33 @@
     }
 
     let gradesButtonClick = function () {
-        document.getElementById("content").innerHTML = "Grades";
+        document.getElementById("content").innerHTML = "";
+
+        document.getElementById("fountainG").style.visibility = 'visible';
+
+        let request = new XMLHttpRequest();
+        request.open("GET", "http://localhost:8080/grades", true);
+        request.onreadystatechange = function () {
+            if (request.status == 200 && request.readyState == 4) {
+
+                let content = document.getElementById("content");
+                let grades = JSON.parse(request.responseText).arrayList;
+                for (var grade in grades) {
+                    let tr = document.createElement("tr");
+
+                    let td1 = document.createElement("td");
+
+                    td1.innerHTML = grades[grade].name;
+
+                    tr.appendChild(td1);
+
+
+                    content.appendChild(tr);
+                    document.getElementById("fountainG").style.visibility = 'hidden';
+                }
+            }
+        };
+        request.send();
     }
 
     let subjectsButtonClick = function () {
@@ -97,10 +194,10 @@
     }
 
 
-        teachersButton.addEventListener("click", teachersButtonClick);
-        studentsButton.addEventListener("click", studentsButtonClick);
-        gradesButton.addEventListener("click", gradesButtonClick);
-        subjectsButton.addEventListener("click", subjectsButtonClick);
+    teachersButton.addEventListener("click", teachersButtonClick);
+    studentsButton.addEventListener("click", studentsButtonClick);
+    gradesButton.addEventListener("click", gradesButtonClick);
+    subjectsButton.addEventListener("click", subjectsButtonClick);
 
 </script>
 

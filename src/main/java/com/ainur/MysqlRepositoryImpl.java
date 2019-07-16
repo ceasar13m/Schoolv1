@@ -272,6 +272,34 @@ public class MysqlRepositoryImpl implements Repository {
 
 
     /**
+     * Получение списка всех классов
+     * @return
+     * @throws SQLException
+     */
+
+    public ArrayList<Grade> getAllGrades() throws SQLException {
+        ArrayList<Grade> grades = new ArrayList<>();
+
+        Statement statement;
+
+        statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String tempString = "select * from grades";
+        ResultSet resultSet = statement.executeQuery(tempString);
+        while (resultSet.next()) {
+            Grade grade = new Grade();
+            grade.setName(resultSet.getString(2));
+            grades.add(grade);
+        }
+
+        return grades;
+
+    }
+
+
+
+
+    /**
      * Получение списка всех учителей
      *
      * @return

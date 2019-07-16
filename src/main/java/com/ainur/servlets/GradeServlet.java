@@ -3,6 +3,7 @@ package com.ainur.servlets;
 import com.ainur.MysqlRepositoryImpl;
 import com.ainur.Repository;
 import com.ainur.models.Grade;
+import com.ainur.models.Grades;
 import com.ainur.util.ErrorMessage;
 import com.ainur.util.HttpStatus;
 import com.google.gson.Gson;
@@ -22,7 +23,22 @@ public class GradeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+        try {
+            Grades grades = new Grades();
+            grades.setArrayList(repository.getAllGrades());
+            String jsonString = gson.toJson(grades, Grades.class);
+
+            resp.setContentType("application/json");
+            resp.addHeader("Access-Control-Allow-Origin", "*");
+            resp.setStatus(HttpStatus.OK);
+            resp.getWriter().println(jsonString);
+            resp.getWriter().flush();
+        } catch (Exception e) {
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
+        }
     }
 
     @Override
