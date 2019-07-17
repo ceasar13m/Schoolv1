@@ -30,7 +30,6 @@
 </div>
 
 
-
 <!--==========================================================================
 
 Блоки страницы
@@ -38,38 +37,25 @@
 =============================================================================-->
 
 
-
 <h3 class="widget-title">Virtual School</h3>
 
-<hr width=90% size="10" color=#eaeaea />
+<hr width=90% size="10" color=grey>
 </br>
 
-<table>
 
-    <tr>
+<div class="widget" id="menu">
 
-        <td valign="top">
-            <div class="widget" id="menu">
+    <ul class="widget-list">
+        <li><a href="#" id="teachersButton" onclick="teachersButtonClick()">Teachers</a></li>
+        <li><a href="#" id="studentsButton" onclick="studentsButtonClick()"> Students</a></li>
+        <li><a href="#" id="gradesButton" onclick="gradesButtonClick()">Grades</a></li>
+        <li><a href="#" id="subjectsButton" onclick="subjectsButtonClick()">Subjects</a></li>
+    </ul>
+</div>
 
-                <ul class="widget-list">
-                    <li><a href="#" id="teachersButton" onclick="teachersButtonClick()">Teachers</a></li>
-                    <li><a href="#" id="studentsButton" onclick="studentsButtonClick()"> Students</a></li>
-                    <li><a href="#" id="gradesButton" onclick="gradesButtonClick()">Grades</a></li>
-                    <li><a href="#" id="subjectsButton" onclick="subjectsButtonClick()">Subjects</a></li>
-                </ul>
-            </div>
-        </td>
+<div class="content" id="content">
 
-        <td width="70%">
-            <div id="content">
-
-            </div>
-        </td>
-    </tr>
-</table>
-
-
-
+</div>
 
 
 <!--=============================================================================================
@@ -79,127 +65,7 @@ Script
 ==================================================================================================-->
 
 
-
-
-<script>
-    document.getElementById("fountainG").style.visibility = 'hidden';
-    let teachersButton = document.getElementById("teachersButton");
-    let studentsButton = document.getElementById("studentsButton");
-    let gradesButton = document.getElementById("gradesButton");
-    let subjectsButton = document.getElementById("subjectsButton");
-
-
-    let teachersButtonClick = function () {
-
-        document.getElementById("content").innerHTML = "";
-
-        document.getElementById("fountainG").style.visibility = 'visible';
-
-        let request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:8080/teachers", true);
-        request.onreadystatechange = function () {
-            if (request.status == 200 && request.readyState == 4) {
-
-                let content = document.getElementById("content");
-                let teachers = JSON.parse(request.responseText).arrayList;
-                for (var teacher in teachers) {
-                    let tr = document.createElement("tr");
-
-                    let td1 = document.createElement("td");
-                    let td2 = document.createElement("td");
-
-                    td1.innerHTML = teachers[teacher].firstName;
-                    td2.innerHTML = teachers[teacher].secondName;
-
-                    tr.appendChild(td1);
-                    tr.appendChild(td2);
-
-
-                    content.appendChild(tr);
-                    document.getElementById("fountainG").style.visibility = 'hidden';
-                }
-            }
-        };
-        request.send();
-    }
-
-    let studentsButtonClick = function () {
-        document.getElementById("content").innerHTML = "";
-        document.getElementById("fountainG").style.visibility = 'visible';
-
-        let request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:8080/students?gradeId=2", true);
-        request.onreadystatechange = function () {
-            if (request.status == 200 && request.readyState == 4) {
-                let content = document.getElementById("content");
-                content.boarder = 1;
-                let students = JSON.parse(request.responseText).arrayList;
-                for (var student in students) {
-                    let tr = document.createElement("tr");
-
-                    let td1 = document.createElement("td");
-                    let td2 = document.createElement("td");
-                    let td3 = document.createElement("td");
-
-                    td1.innerHTML = students[student].firstName;
-                    td2.innerHTML = students[student].secondName;
-                    td3.innerHTML = students[student].gradeId;
-
-
-                    tr.appendChild(td1);
-                    tr.appendChild(td2);
-                    tr.appendChild(td3);
-
-
-                    content.appendChild(tr);
-                    document.getElementById("fountainG").style.visibility = 'hidden';
-                }
-            }
-        };
-        request.send();
-    }
-
-    let gradesButtonClick = function () {
-        document.getElementById("content").innerHTML = "";
-
-        document.getElementById("fountainG").style.visibility = 'visible';
-
-        let request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:8080/grades", true);
-        request.onreadystatechange = function () {
-            if (request.status == 200 && request.readyState == 4) {
-
-                let content = document.getElementById("content");
-                let grades = JSON.parse(request.responseText).arrayList;
-                for (var grade in grades) {
-                    let tr = document.createElement("tr");
-
-                    let td1 = document.createElement("td");
-
-                    td1.innerHTML = grades[grade].name;
-
-                    tr.appendChild(td1);
-
-
-                    content.appendChild(tr);
-                    document.getElementById("fountainG").style.visibility = 'hidden';
-                }
-            }
-        };
-        request.send();
-    }
-
-    let subjectsButtonClick = function () {
-        document.getElementById("content").innerHTML = "Subjects";
-    }
-
-
-    teachersButton.addEventListener("click", teachersButtonClick);
-    studentsButton.addEventListener("click", studentsButtonClick);
-    gradesButton.addEventListener("click", gradesButtonClick);
-    subjectsButton.addEventListener("click", subjectsButtonClick);
-
-</script>
+<script type="text/javascript" src="script.js"></script>
 
 
 </body>

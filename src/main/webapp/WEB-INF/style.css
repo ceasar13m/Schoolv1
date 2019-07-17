@@ -241,15 +241,43 @@
     color:  #424949;
 }
 
-#content #table {
-    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-    font-size: 14px;
-    border-collapse: collapse;
-    text-align: center;
+.content {
+    float: left;
 
-    border: solid 1px blue;
-    border-collapse: collapse;
+    margin-bottom: 15px;
+    padding: 10px 25px 10px 25px;
+
+    background-color: snow;
+    font-family: FontAwesome;
+    font-size: 20px;
 }
+
+table {border-collapse: collapse;}
+
+table {border: 1px solid #69c;}
+th {
+    font-weight: normal;
+    color: #039;
+    border-bottom: 1px dashed #69c;
+    padding: 12px 17px;
+}
+td {
+    color: #669;
+    padding: 7px 17px;
+}
+tr:hover td {background: #ccddff;}
+
+
+.widget {
+    float: left;
+    width: 25%;
+    min-height: 100px;
+
+    background-color: snow;
+}
+
+
+
 
 
 
