@@ -21,4 +21,5 @@ public interface Repository {
     public ArrayList<Student> getStudents(int gradeId) throws Exception, NotFoundException;
     public void assignSubjectToTeacher(int idTeacher, int idSubject) throws SQLException;
     public ArrayList<Grade> getAllGrades() throws SQLException;
+    public ArrayList<Subject> getAllSubjects() throws SQLException;
 }

@@ -23,8 +23,6 @@ public class MysqlRepositoryImpl implements Repository {
     private static Connection connection;
 
 
-
-
     /**
      * Конструктор Singleton класса
      * Создается БД school
@@ -273,6 +271,7 @@ public class MysqlRepositoryImpl implements Repository {
 
     /**
      * Получение списка всех классов
+     *
      * @return
      * @throws SQLException
      */
@@ -296,7 +295,24 @@ public class MysqlRepositoryImpl implements Repository {
 
     }
 
+    @Override
+    public ArrayList<Subject> getAllSubjects() throws SQLException {
+        ArrayList<Subject> subjects = new ArrayList<>();
 
+        Statement statement;
+
+        statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String tempString = "select * from subjects";
+        ResultSet resultSet = statement.executeQuery(tempString);
+        while (resultSet.next()) {
+            Subject subject = new Subject();
+            subject.setName(resultSet.getString(2));
+            subjects.add(subject);
+        }
+
+        return subjects;
+    }
 
 
     /**

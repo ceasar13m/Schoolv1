@@ -74,4 +74,9 @@ public class InMemoryRepositoryImpl implements Repository {
     public ArrayList<Grade> getAllGrades() throws SQLException {
         return null;
     }
+
+    @Override
+    public ArrayList<Subject> getAllSubjects() throws SQLException {
+        return null;
+    }
 }
