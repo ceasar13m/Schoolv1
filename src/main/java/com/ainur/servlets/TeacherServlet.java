@@ -81,20 +81,30 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            boolean isCorrect = (req.getParameterMap().containsKey("teacherId")
-                    && (!req.getParameter("teacherId").isEmpty())
-                    && (req.getParameterMap().containsKey("subjectId")
-                    && !req.getParameter("subjectId").isEmpty()));
-            if (isCorrect) {
-                int teacherId = Integer.parseInt(req.getParameter("teacherId"));
-                int subjectId = Integer.parseInt(req.getParameter("subjectId"));
+            Teacher teacher = gson.fromJson(req.getReader(), Teacher.class);
+            boolean isCorrect = (teacher.getFirstName() != null) &&
+                    (!teacher.getFirstName().isEmpty() &&
+                            (teacher.getSecondName() != null) &&
+                            (!teacher.getSecondName().isEmpty()));
 
-                repository.assignSubjectToTeacher(teacherId, subjectId);
+            if (isCorrect) {
+                repository.modTeacher(teacher);
                 resp.setStatus(HttpStatus.OK);
-            } else
+                resp.addHeader("Access-Control-Allow-Origin", "*");
+            } else {
                 resp.setStatus(HttpStatus.BAD_REQUEST);
+                resp.addHeader("Access-Control-Allow-Origin", "*");
+            }
+
+        } catch (SQLException e) {
+            resp.setStatus(HttpStatus.FORBIDDEN);
+            resp.addHeader("Access-Control-Allow-Origin", "*");
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
         } catch (Exception e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            resp.addHeader("Access-Control-Allow-Origin", "*");
             ErrorMessage errorMessage = new ErrorMessage();
             errorMessage.setMessage(e.getMessage());
             resp.getWriter().println(errorMessage.getMessage());

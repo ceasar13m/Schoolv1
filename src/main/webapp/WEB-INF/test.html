@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <table  id="table" cellpadding="2" cellspacing="2" border="1"></table>
+</div>
+    <script>
+        let divTable = document.getElementById("table");
+
+        for(let i = 0; i < 3; i++) {
+            let tr = document.createElement("tr");
+
+            for (let j = 0; j < 2; j++) {
+                let td = document.createElement("td");
+                let string = i + " : " + j;
+                td.innerHTML = string;
+                tr.appendChild(td);
+                tr.setAttribute('border', 1);
+                td.setAttribute('id', i+j);
+            }
+            divTable.appendChild(tr);
+        }
+
+
+        table.onclick = function(e) {
+            let target = e.target;
+
+            alert(target.getAttribute('id') + target.tagName);
+        }
+    </script>
+</body>
+</html>

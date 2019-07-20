@@ -1,10 +1,9 @@
 var table = document.getElementById('content');
-
 var editingTd;
 
 table.onclick = function(event) {
 
-    var target = event.target;
+    target = event.target;
 
     while (target != table) {
         if (target.className == 'edit-cancel') {
@@ -13,14 +12,14 @@ table.onclick = function(event) {
         }
 
         if (target.className == 'edit-ok') {
-            finishTdEdit(editingTd.elem, true);
+            finishTdEdit(editingTd.elem, true, target);
             return;
         }
 
         if (target.nodeName == 'TD') {
             if (editingTd) return; // already editing
-
             makeTdEditable(target);
+
             return;
         }
 
@@ -51,9 +50,11 @@ function makeTdEditable(td) {
     );
 }
 
-function finishTdEdit(td, isOk) {
+function finishTdEdit(td, isOk, target) {
     if (isOk) {
         td.innerHTML = td.firstChild.value;
+        alert(target.getAttribute('id'));
+        worker(target.getAttribute('id'), td.innerHTML);
     } else {
         td.innerHTML = editingTd.data;
     }

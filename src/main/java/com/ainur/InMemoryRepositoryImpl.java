@@ -76,6 +76,26 @@ public class InMemoryRepositoryImpl implements Repository {
     }
 
     @Override
+    public void modTeacher(Teacher teacher) throws SQLException {
+
+    }
+
+    @Override
+    public void modStudent() throws SQLException {
+
+    }
+
+    @Override
+    public void modGrade() throws SQLException {
+
+    }
+
+    @Override
+    public void modSubject() throws SQLException {
+
+    }
+
+    @Override
     public ArrayList<Subject> getAllSubjects() throws SQLException {
         return null;
     }

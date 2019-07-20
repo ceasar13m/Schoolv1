@@ -139,6 +139,28 @@ public class MysqlRepositoryImpl implements Repository {
 
     }
 
+    @Override
+    public void modTeacher(Teacher teacher) throws SQLException {
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String modString = "update teachers firstName = "+teacher.getFirstName()+", secondName = "+teacher.getSecondName()+"  WHERE ID =" + teacher.getId();
+        statement.executeUpdate(modString);
+    }
+
+    @Override
+    public void modStudent() throws SQLException {
+
+    }
+
+    @Override
+    public void modGrade() throws SQLException {
+
+    }
+
+    @Override
+    public void modSubject() throws SQLException {
+
+    }
 
     /**
      * Удаление учителя
@@ -332,6 +354,7 @@ public class MysqlRepositoryImpl implements Repository {
         ResultSet resultSet = statement.executeQuery(tempString);
         while (resultSet.next()) {
             Teacher teacher = new Teacher();
+            teacher.setId(Integer.parseInt(resultSet.getString(1)));
             teacher.setFirstName(resultSet.getString(2));
             teacher.setSecondName(resultSet.getString(3));
             teachers.add(teacher);

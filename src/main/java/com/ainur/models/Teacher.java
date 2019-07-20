@@ -3,6 +3,7 @@ package com.ainur.models;
 public class Teacher {
     private String firstName;
     private String secondName;
+    private int id;
 
     public String getFirstName() {
         return firstName;
@@ -18,5 +19,13 @@ public class Teacher {
 
     public void setSecondName(String secondName) {
         this.secondName = secondName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

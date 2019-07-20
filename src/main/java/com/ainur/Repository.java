@@ -22,4 +22,8 @@ public interface Repository {
     public void assignSubjectToTeacher(int idTeacher, int idSubject) throws SQLException;
     public ArrayList<Grade> getAllGrades() throws SQLException;
     public ArrayList<Subject> getAllSubjects() throws SQLException;
+    public void modTeacher(Teacher teacher) throws SQLException;
+    public void modStudent() throws SQLException;
+    public void modGrade() throws SQLException;
+    public void modSubject() throws SQLException;
 }
