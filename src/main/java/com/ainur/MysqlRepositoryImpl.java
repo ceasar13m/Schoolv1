@@ -143,23 +143,34 @@ public class MysqlRepositoryImpl implements Repository {
     public void modTeacher(Teacher teacher) throws SQLException {
         Statement statement = connection.createStatement();
         statement.executeUpdate("use school");
-        String modString = "update teachers firstName = "+teacher.getFirstName()+", secondName = "+teacher.getSecondName()+"  WHERE ID =" + teacher.getId();
+        String modString = "update teachers set firstName = '"+teacher.getFirstName()+"', secondName = '"+teacher.getSecondName()+"'  WHERE ID =" + teacher.getId();
         statement.executeUpdate(modString);
     }
 
     @Override
-    public void modStudent() throws SQLException {
-
+    public void modStudent(Student student) throws SQLException {
+        System.out.println(student.getFirstName());
+        System.out.println(student.getFirstName() + " " + student.getId());
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String modString = "update students set firstName = '"+student.getFirstName()+ "', gradeId = '" + student.getGradeId() + "', secondName = '"+student.getSecondName()+"'  WHERE ID =" + student.getId();
+        statement.executeUpdate(modString);
     }
 
     @Override
-    public void modGrade() throws SQLException {
-
+    public void modGrade(Grade grade) throws SQLException {
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String modString = "update grades set name = '"+grade.getName()+"'  WHERE ID =" + grade.getId();
+        statement.executeUpdate(modString);
     }
 
     @Override
-    public void modSubject() throws SQLException {
-
+    public void modSubject(Subject subject) throws SQLException {
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String modString = "update subjects set name = '"+subject.getName()+"'  WHERE ID =" + subject.getId();
+        statement.executeUpdate(modString);
     }
 
     /**
@@ -170,7 +181,6 @@ public class MysqlRepositoryImpl implements Repository {
      */
     @Override
     public void removeTeacher(int teacherId) throws SQLException, NotFoundException {
-
         Statement statement = connection.createStatement();
         statement.executeUpdate("use school");
         String tempString = "select * from teachers where id = " + teacherId;
@@ -252,6 +262,7 @@ public class MysqlRepositoryImpl implements Repository {
 
         while (resultSet.next()) {
             Student student = new Student();
+            student.setId(Integer.parseInt(resultSet.getString(1)));
             student.setFirstName(resultSet.getString(2));
             student.setSecondName(resultSet.getString(3));
             student.setGradeId(Integer.parseInt(resultSet.getString(4)));
@@ -280,6 +291,7 @@ public class MysqlRepositoryImpl implements Repository {
         ResultSet resultSet = statement.executeQuery(tempString);
         while (resultSet.next()) {
             Student student = new Student();
+            student.setId(Integer.parseInt(resultSet.getString(1)));
             student.setFirstName(resultSet.getString(2));
             student.setSecondName(resultSet.getString(3));
             student.setGradeId(Integer.parseInt(resultSet.getString(4)));
@@ -309,6 +321,7 @@ public class MysqlRepositoryImpl implements Repository {
         ResultSet resultSet = statement.executeQuery(tempString);
         while (resultSet.next()) {
             Grade grade = new Grade();
+            grade.setId(Integer.parseInt(resultSet.getString(1)));
             grade.setName(resultSet.getString(2));
             grades.add(grade);
         }
@@ -329,6 +342,7 @@ public class MysqlRepositoryImpl implements Repository {
         ResultSet resultSet = statement.executeQuery(tempString);
         while (resultSet.next()) {
             Subject subject = new Subject();
+            subject.setId(Integer.parseInt(resultSet.getString(1)));
             subject.setName(resultSet.getString(2));
             subjects.add(subject);
         }
@@ -361,6 +375,32 @@ public class MysqlRepositoryImpl implements Repository {
         }
         return teachers;
 
+    }
+
+    @Override
+    public void removeGrade(int gradeId) throws SQLException, NotFoundException {
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String tempString = "select * from grades where id = " + gradeId;
+        ResultSet resultSet = statement.executeQuery(tempString);
+        if (!resultSet.next())
+            throw new NotFoundException();
+
+        String removeStudentString = "delete from grades where id =" + gradeId;
+        statement.executeUpdate(removeStudentString);
+    }
+
+    @Override
+    public void removeSubject(int subjectId) throws SQLException, Exception, NotFoundException {
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("use school");
+        String tempString = "select * from subjects where id = " + subjectId;
+        ResultSet resultSet = statement.executeQuery(tempString);
+        if (!resultSet.next())
+            throw new NotFoundException();
+
+        String removeStudentString = "delete from subjects where id =" + subjectId;
+        statement.executeUpdate(removeStudentString);
     }
 
     @Override

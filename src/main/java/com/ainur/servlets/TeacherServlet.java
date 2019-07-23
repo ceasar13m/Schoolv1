@@ -57,6 +57,7 @@ public class TeacherServlet extends HttpServlet {
             if (isCorrect) {
                 repository.addTeacher(teacher);
                 resp.setStatus(HttpStatus.OK);
+                resp.setContentType("text/html");
                 resp.addHeader("Access-Control-Allow-Origin", "*");
             } else {
                 resp.setStatus(HttpStatus.BAD_REQUEST);
@@ -91,9 +92,13 @@ public class TeacherServlet extends HttpServlet {
                 repository.modTeacher(teacher);
                 resp.setStatus(HttpStatus.OK);
                 resp.addHeader("Access-Control-Allow-Origin", "*");
+
+                resp.addHeader("Access-Control-Allow-Methods:", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
             } else {
                 resp.setStatus(HttpStatus.BAD_REQUEST);
                 resp.addHeader("Access-Control-Allow-Origin", "*");
+
+                resp.addHeader("Access-Control-Allow-Methods:", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
             }
 
         } catch (SQLException e) {
@@ -114,8 +119,8 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            if (req.getParameterMap().containsKey("teacherId") && !req.getParameter("teacherId").isEmpty()) {
-                repository.removeTeacher(Integer.parseInt(req.getParameter("teacherId")));
+            if (req.getHeader("teacherId") != null) {
+                repository.removeTeacher(Integer.parseInt(req.getHeader("teacherId")));
                 resp.setStatus(HttpStatus.OK);
             } else {
                 resp.setStatus(HttpStatus.BAD_REQUEST);

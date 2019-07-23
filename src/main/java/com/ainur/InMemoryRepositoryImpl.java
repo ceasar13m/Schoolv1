@@ -81,17 +81,27 @@ public class InMemoryRepositoryImpl implements Repository {
     }
 
     @Override
-    public void modStudent() throws SQLException {
+    public void modStudent(Student student) throws SQLException {
 
     }
 
     @Override
-    public void modGrade() throws SQLException {
+    public void modGrade(Grade grade) throws SQLException {
 
     }
 
     @Override
-    public void modSubject() throws SQLException {
+    public void modSubject(Subject subject) throws SQLException {
+
+    }
+
+    @Override
+    public void removeGrade(int gradeId) throws SQLException, NotFoundException {
+
+    }
+
+    @Override
+    public void removeSubject(int subjectId) throws SQLException, Exception, NotFoundException {
 
     }
 

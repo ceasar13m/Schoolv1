@@ -1,5 +1,6 @@
 var table = document.getElementById('content');
 var editingTd;
+let temp;
 table.onclick = function(event) {
 
     target = event.target;
@@ -12,15 +13,17 @@ table.onclick = function(event) {
 
         if (target.className == 'edit-ok') {
             finishTdEdit(editingTd.elem, true);
+
             return;
         }
 
-        if (target.nodeName == 'TD') {
+        if (target.className == 'editable') {
             if (editingTd) return; // already editing
             makeTdEditable(target);
-
+            temp = target;
             return;
         }
+        //
 
         target = target.parentNode;
     }

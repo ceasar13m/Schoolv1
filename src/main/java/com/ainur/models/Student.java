@@ -4,6 +4,7 @@ public class Student {
     private String firstName;
     private String secondName;
     private int gradeId;
+    private int id;
 
     public String getFirstName() {
         return firstName;
@@ -27,5 +28,13 @@ public class Student {
 
     public void setGradeId(int gradeId) {
         this.gradeId = gradeId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -24,20 +24,74 @@ subjectsButton.onclick = function () {
             content.appendChild(trT);
 
 
-            for (var subject in subjects) {
+            for (var i in subjects) {
+                var subjectObject = {
+                    columnValue: subjects[i].name,
+                    columnRef: document.createElement('td'),
+                    id: subjects[i].id
+                };
+
+                gradesStorage[i] = subjectObject;
                 let tr = document.createElement("tr");
 
-                let td1 = document.createElement("td");
 
-                td1.innerHTML = subjects[subject].name;
+                let td1 = subjectObject.columnRef;
+                td1.setAttribute('id', "subject-" + 0 + "-" + subjectObject.id);
+                td1.className = 'editable';
+
+
+                let delSubjectButton = document.createElement('button');
+                delSubjectButton.innerText = "del";
+                delSubjectButton.setAttribute('id', subjectObject.id);
+                delSubjectButton.onclick = function (ev) {
+                    let req = new XMLHttpRequest();
+                    req.open("DELETE", "http://localhost:8080/subjects", true);
+                    req.setRequestHeader('subjectId', subjectObject.id);
+                    req.send();
+                }
+                td1.innerHTML = subjectObject.columnValue;
+
 
                 tr.appendChild(td1);
-
-
+                tr.appendChild(delSubjectButton);
                 content.appendChild(tr);
-                document.getElementById("fountainG").style.visibility = 'hidden';
+
             }
+
+            let trInp = document.createElement('tr');
+            let tdInp1 = document.createElement('td');
+
+            let form1 = document.createElement('input');
+
+            form1.setAttribute('type', 'text');
+            form1.setAttribute('id', 'nameForm');
+            form1.setAttribute('size', '3');
+
+
+            let addSubjectButton = document.createElement('button');
+            addSubjectButton.innerText = "add";
+            addSubjectButton.setAttribute('id', subjectObject.id);
+            addSubjectButton.onclick = function (ev) {
+                let temp = document.getElementById('nameForm');
+                let tempSubject = {
+                    name: temp.value,
+                }
+                let jsonString = JSON.stringify(tempSubject);
+                let request = new XMLHttpRequest();
+                request.open("POST", "http://localhost:8080/subjects", true);
+                request.send(jsonString);
+            }
+
+
+            tdInp1.appendChild(form1);
+            trInp.appendChild(tdInp1);
+            trInp.appendChild(addSubjectButton);
+
+            content.appendChild(trInp);
+
         }
+        document.getElementById("fountainG").style.visibility = 'hidden';
+
     }
     request.send();
 }

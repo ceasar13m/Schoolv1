@@ -37,8 +37,6 @@ public class StudentServlet extends HttpServlet {
             resp.addHeader("Access-Control-Allow-Origin", "*");
             resp.setStatus(HttpStatus.OK);
 
-            System.out.println(jsonString);
-
             resp.getWriter().println(jsonString);
             resp.getWriter().flush();
 
@@ -68,16 +66,15 @@ public class StudentServlet extends HttpServlet {
         try {
             Student student = gson.fromJson(req.getReader(), Student.class);
             boolean isCorrect = (student.getFirstName() != null) &&
-                            (!student.getFirstName().isEmpty() &&
+                    (!student.getFirstName().isEmpty() &&
                             (student.getSecondName() != null) &&
                             (!student.getSecondName().isEmpty()));
 
 
-            if(isCorrect) {
+            if (isCorrect) {
                 repository.addStudent(student);
                 resp.setStatus(HttpStatus.OK);
-            }
-            else
+            } else
                 resp.setStatus(HttpStatus.BAD_REQUEST);
 
         } catch (SQLException e) {
@@ -95,14 +92,46 @@ public class StudentServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        try {
+            Student student = gson.fromJson(req.getReader(), Student.class);
+            boolean isCorrect = (student.getFirstName() != null) &&
+                    (!student.getFirstName().isEmpty() &&
+                            (student.getSecondName() != null) &&
+                            (!student.getSecondName().isEmpty()));
+
+            if (isCorrect) {
+                repository.modStudent(student);
+                resp.setStatus(HttpStatus.OK);
+                resp.addHeader("Access-Control-Allow-Origin", "*");
+
+                resp.addHeader("Access-Control-Allow-Methods:", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
+            } else {
+                resp.setStatus(HttpStatus.BAD_REQUEST);
+                resp.addHeader("Access-Control-Allow-Origin", "*");
+
+                resp.addHeader("Access-Control-Allow-Methods:", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
+            }
+
+        } catch (SQLException e) {
+            resp.setStatus(HttpStatus.FORBIDDEN);
+            resp.addHeader("Access-Control-Allow-Origin", "*");
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
+        } catch (Exception e) {
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            resp.addHeader("Access-Control-Allow-Origin", "*");
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage(e.getMessage());
+            resp.getWriter().println(errorMessage.getMessage());
+        }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            if (req.getParameterMap().containsKey("studentId") && !req.getParameter("studentId").equals("")) {
-                repository.removeStudent(Integer.parseInt(req.getParameter("studentId")));
+            if (req.getHeader("studentId") != null) {
+                repository.removeStudent(Integer.parseInt(req.getHeader("studentId")));
                 resp.setStatus(HttpStatus.OK);
             } else {
                 resp.setStatus(HttpStatus.BAD_REQUEST);

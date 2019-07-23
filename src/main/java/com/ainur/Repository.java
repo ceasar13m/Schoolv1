@@ -12,18 +12,25 @@ import java.util.ArrayList;
 public interface Repository {
     public void addTeacher(Teacher teacher) throws SQLException;
     public void addStudent(Student student) throws SQLException;
-    public void removeTeacher(int teacherId) throws SQLException, NotFoundException;
-    public void removeStudent(int studentId) throws SQLException, Exception, NotFoundException;
     public void addGrade(Grade grade) throws SQLException;
     public void addSubject(Subject subject) throws SQLException;
+
+    public void removeTeacher(int teacherId) throws SQLException, NotFoundException;
+    public void removeStudent(int studentId) throws SQLException, Exception, NotFoundException;
+    public void removeGrade(int gradeId) throws SQLException, NotFoundException;
+    public void removeSubject(int subjectId) throws SQLException, Exception, NotFoundException;
+
     public ArrayList<Student> getAllStudents() throws SQLException;
     public ArrayList<Teacher> getAllTeachers() throws SQLException;
-    public ArrayList<Student> getStudents(int gradeId) throws Exception, NotFoundException;
-    public void assignSubjectToTeacher(int idTeacher, int idSubject) throws SQLException;
     public ArrayList<Grade> getAllGrades() throws SQLException;
     public ArrayList<Subject> getAllSubjects() throws SQLException;
+
+    public ArrayList<Student> getStudents(int gradeId) throws Exception, NotFoundException;
+
+    public void assignSubjectToTeacher(int idTeacher, int idSubject) throws SQLException;
+
     public void modTeacher(Teacher teacher) throws SQLException;
-    public void modStudent() throws SQLException;
-    public void modGrade() throws SQLException;
-    public void modSubject() throws SQLException;
+    public void modStudent(Student student) throws SQLException;
+    public void modGrade(Grade grade) throws SQLException;
+    public void modSubject(Subject subject) throws SQLException;
 }
