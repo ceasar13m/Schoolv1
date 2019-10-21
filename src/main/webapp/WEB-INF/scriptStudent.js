@@ -1,19 +1,26 @@
 let studentsButton = document.getElementById("studentsButton");
 let studentsStorage = [];
 
+
+
+var gradesArray;
+
+
+
 studentsButton.onclick = function () {
     document.getElementById("content").innerHTML = "";
     document.getElementById("fountainG").style.visibility = 'visible';
 
 
     let req = new XMLHttpRequest();
-    var gradesArray = [1, 2, 3];
     req.open("GET", "http://localhost:8080/grades", true);
     req.onreadystatechange = function () {
         if (req.status === 200 && req.readyState === 4) {
-            gradesArray = JSON.parse(request.responseText).arrayList;
+            gradesArray = JSON.parse(req.responseText).arrayList;
         }
+
     }
+    req.send();
 
     let request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/students?getAll=true", true);
@@ -60,6 +67,11 @@ studentsButton.onclick = function () {
                 td2.setAttribute('id', "student-" + 1 + "-" + studentObject.id);
                 td2.className = 'editable';
 
+                let grade;
+                for(gradeIndex in gradesArray) {
+                    if(gradesArray[gradeIndex].id === students[i].gradeId)
+                        grade = gradesArray[gradeIndex].name;
+                }
                 let td3 = studentObject.column3Ref;
                 td3.setAttribute('id', "student-" + 2 + "-" + studentObject.id);
                 td3.className = 'editable';
@@ -72,12 +84,13 @@ studentsButton.onclick = function () {
                     req.open("DELETE", "http://localhost:8080/students", true);
                     req.setRequestHeader('studentId', studentObject.id);
                     req.send();
+
                 }
 
 
                 td1.innerHTML = studentObject.column1Value;
                 td2.innerHTML = studentObject.column2Value;
-                td3.innerHTML = studentObject.column3Value;
+                td3.innerHTML = grade;
 
 
                 tr.appendChild(td1);
@@ -103,7 +116,7 @@ studentsButton.onclick = function () {
 
             let form2 = document.createElement('input');
             form2.type = "text";
-            form2.id = "firstNameForm";
+            form2.id = "secondNameForm";
             form2.size = 10;
 
             let select3 = document.createElement('select');
